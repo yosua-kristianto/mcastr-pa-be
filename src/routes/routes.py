@@ -1,7 +1,7 @@
-from fastapi import APIRouter;
+from fastapi import APIRouter
 
-route = APIRouter(prefix = "/api");
+route = APIRouter(prefix = "/api")
 
-from core_service.src.main.api.parking.parking_controller import ParkingController;
+from controller.text_analyzer.controller import TextAnalyzerController
 
-route.include_router(ParkingController.router, prefix="/v1/parking");
+route.include_router(TextAnalyzerController.router, prefix="/v1/text-analyzer")
