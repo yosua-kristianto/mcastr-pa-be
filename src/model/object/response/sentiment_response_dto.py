@@ -1,5 +1,4 @@
-from pydantic import BaseModel
 
-class SentimentResponseDTO(BaseModel):
+class SentimentResponseDTO():
     image_uri: str
     
