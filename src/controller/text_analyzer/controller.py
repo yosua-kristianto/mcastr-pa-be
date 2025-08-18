@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controller_handler import handle_text_analysis
+from controller.text_analyzer.controller_handler import handle_text_analysis
 
 from model.object.base_response_dto import BaseResponse
 from model.object.request.sentiment_request_dto import SentimentRequestDTO
@@ -13,6 +13,18 @@ class TextAnalyzerController:
     async def analyze_text(request: SentimentRequestDTO):
         """This endpoint performs text analysis by taking the input text,
         and returning the CDN URL of an image that is related to the text based-on sentiment.
+
+        -- Request:
+        {
+            "text": "I love programming!"
+        }
+
+        -- Response:
+
+        {
+            "image_uri": "https://cdn.example.com/images/sentiment/love.png"
+        }
+
         """
         
         response = SentimentResponseDTO()
