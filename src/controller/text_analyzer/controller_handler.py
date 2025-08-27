@@ -1,23 +1,50 @@
+from sqlmodel import Session
+from common.constant import GCO_MODEL_TYPE_SWITCH_CONFIG_KEY, LGBM_MODEL_VERSION, SVC_MODEL_VERSION
 from core.model_integrator import EmoAnalyzerModel
+from model.entity.ModelVersion import ModelVersion
+from model.entity.ModelLog import ModelLog
 
-def handle_text_analysis(text: str) -> str:
-    """This handler function processes as bridge input text to perform sentiment analysis, 
-    and take control of the logic to return the CDN URL of an image related to the sentiment of the text.
+import uuid
 
-    The sentiment analysis logic is applied in the ML dedicated service layer.
+from repository.gco.ConfigRepository import ConfigRepository
+from repository.ml.EmotionPicRepository import EmotionPicRepository
+from repository.mlops.ModelLogRepository import ModelLogRepository
 
-    Args:
-        text (str): The input text to analyze.
+class TextAnalyzerControllerHandler:
 
-    Returns:
-        str: The CDN URL of the image related to the sentiment of the text.
-    """
-    prediction = EmoAnalyzerModel().emo_analysis(text)
+    def __init__(self, session: Session):
+        self.config_repository = ConfigRepository(session)
+        self.model_log_repository = ModelLogRepository(session)
+        self.emotion_pic_repository = EmotionPicRepository(session)    
+
+
+    def handle_text_analysis(self, text: str) -> str:
+        """This handler function processes as bridge input text to perform sentiment analysis, 
+        and take control of the logic to return the CDN URL of an image related to the sentiment of the text.
+
+        The sentiment analysis logic is applied in the ML dedicated service layer.
+
+        Args:
+            text (str): The input text to analyze.
+
+        Returns:
+            str: The CDN URL of the image related to the sentiment of the text.
+        """
+
+        model_configuration = self.config_repository.get_config_by_key(GCO_MODEL_TYPE_SWITCH_CONFIG_KEY)
         
-    match(prediction):
-        case 0: return "Sadness"
-        case 1: return "joy"
-        case 2: return "love"
-        case 3: return "anger"
-        case 4: return "fear"
-        case 5: return "suprise"
+        prediction = EmoAnalyzerModel(model_configuration).emo_analysis(text)
+
+        model_log = ModelLog()
+        model_log.uuid = str(uuid.uuid4())
+        model_log.version_id = LGBM_MODEL_VERSION if model_configuration == "lgb" else SVC_MODEL_VERSION
+        model_log.user_session_id = "some-session-id"
+        model_log.prompt = text
+        model_log.model_output = prediction
+
+        print(model_log.version_id)
+
+        self.model_log_repository.create_model_log(model_log)
+
+        return self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(prediction)
+            
