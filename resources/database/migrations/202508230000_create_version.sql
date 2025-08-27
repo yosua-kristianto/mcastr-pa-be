@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS mlops_tbl_version (
+    model_name VARCHAR(60) PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+);
