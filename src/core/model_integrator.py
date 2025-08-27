@@ -3,6 +3,7 @@ from pathlib import Path
 
 from sklearn.svm import SVC
 from sklearn.feature_extraction.text import HashingVectorizer
+from lightgbm import LGBMClassifier
 
 vectorizer = HashingVectorizer(
         ngram_range=(1, 3),   
@@ -12,24 +13,21 @@ vectorizer = HashingVectorizer(
     )
 
 class EmoAnalyzerModel:
-    """
-    EmoAnalyzerModel class to handle the loading of the pre-trained emotion analysis model.
-    This class is responsible for integrating the model into the application.
-    """
 
-    def __init__(self):
+    def __init__(self, choosen_model: str):
+        self.choosen_model = choosen_model
         self.model = self.__model_loader()
 
-    def __model_loader(self) -> SVC:
+    def __model_loader(self) -> SVC | LGBMClassifier:
         """
         @private
-        Load the pre-trained SVC model from joblib file.
+        Load the pre-trained SVC / LightGBM model from joblib file.
         Path: ../resources/model/model.joblib
         """
-        model_path = Path(__file__).parent / "../../resources/model/model.joblib"
+        model_path = Path(__file__).parent / f"../../resources/model/{self.choosen_model}-model.joblib"
         model = joblib.load(model_path.resolve())
         return model
-
+    
     def emo_analysis(self, text: str) -> int:
         vector = vectorizer.transform([text])
         tensor = self.model.predict(vector)
