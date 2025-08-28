@@ -1,4 +1,4 @@
 from pydantic import BaseModel
 
-class SentimentRequestDTO(BaseModel):
+class TextAnalysisRequestDTO(BaseModel):
     text: str
