@@ -4,8 +4,10 @@ from controller.text_analyzer.controller_handler import TextAnalyzerControllerHa
 
 from core.database import get_session
 from model.object import BaseResponse
-from model.object.request import TextAnalysisRequestDTO
+from model.object.request import TextAnalysisRequestDTO, TextAnalysisFeedbackReviewRequestDTO
 from model.object.response import TextAnalysisResponseDTO
+
+
 
 class TextAnalyzerController:
 
@@ -30,7 +32,7 @@ class TextAnalyzerController:
 
         """
         
-        response: TextAnalysisRequestDTO = TextAnalyzerControllerHandler(session).handle_text_analysis(request.text)
+        response: TextAnalysisRequestDTO = await TextAnalyzerControllerHandler(session).handle_text_analysis(request.text)
         
         return BaseResponse.ok(
             message = "Text analysis completed", 
@@ -38,4 +40,23 @@ class TextAnalyzerController:
         )
 
 
-    async def feedback_review(request)
+    async def feedback_review(request: TextAnalysisFeedbackReviewRequestDTO, session: Session = Depends(get_session)):
+        """This endpoints triggers feedback review options. Providing a multiple choices
+        that is based-on randomized value from pic repository.
+
+        -- Request:
+        {
+            "feedback_id": "some-feedback-uuid"
+        }
+
+        -- Response:
+        {
+            "0": "some_cdn/path/to/image.jpg",
+            "1": "some_cdn/path/to/image.jpg",
+            "2": "some_cdn/path/to/image.jpg",
+            "3": "some_cdn/path/to/image.jpg",
+            "4": "some_cdn/path/to/image.jpg",
+            "5": "some_cdn/path/to/image.jpg",
+        }
+
+        """
