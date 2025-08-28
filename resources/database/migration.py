@@ -16,7 +16,6 @@ def get_connection():
         port=settings.database_port
     )
 
-
 MIGRATIONS_TABLE = "migrations"
 
 def ensure_migrations_table(conn):
