@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS gco_tbl_config (
+    `key` VARCHAR(60) PRIMARY KEY,
+    `value` TEXT,
+    `data_type` VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+);

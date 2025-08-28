@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS ml_tbl_emotion_pic_repo (
+    uuid VARCHAR(36) PRIMARY KEY,
+    emotion SMALLINT NOT NULL,
+    repository TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+);
