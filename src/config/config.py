@@ -10,10 +10,14 @@ class Settings(BaseSettings):
     database_password: str
     database_name: str
 
+    secret: str
+
     # Define your configuration variables here
     app_name: str = "McAstr PA Service"
     version: str = "1.0.0"
-    debug: bool = True
+    app_debug: bool
+    app_env: str
+    
 
     class Config:
         env_file = ".env"  # Load environment variables from .env file
