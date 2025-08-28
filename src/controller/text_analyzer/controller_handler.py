@@ -11,15 +11,15 @@ from repository.gco import ConfigRepository
 from repository.ml import EmotionPicRepository
 from repository.mlops import ModelLogRepository
 
+
 class TextAnalyzerControllerHandler:
 
     def __init__(self, session: Session):
         self.config_repository = ConfigRepository(session)
         self.model_log_repository = ModelLogRepository(session)
-        self.emotion_pic_repository = EmotionPicRepository(session)    
+        self.emotion_pic_repository = EmotionPicRepository(session)
 
-
-    def handle_text_analysis(self, text: str) -> TextAnalysisResponseDTO:
+    async def handle_text_analysis(self, text: str) -> TextAnalysisResponseDTO:
         """This handler function processes as bridge input text to perform sentiment analysis, 
         and take control of the logic to return the CDN URL of an image related to the sentiment of the text.
 
@@ -33,7 +33,7 @@ class TextAnalyzerControllerHandler:
         """
 
         model_configuration = self.config_repository.get_config_by_key(GCO_MODEL_TYPE_SWITCH_CONFIG_KEY)
-        
+
         prediction = EmoAnalyzerModel(model_configuration).emo_analysis(text)
 
         model_log = ModelLog()
@@ -43,11 +43,18 @@ class TextAnalyzerControllerHandler:
         model_log.prompt = text
         model_log.model_output = prediction
 
-        print(model_log.version_id)
-
         self.model_log_repository.create_model_log(model_log)
 
+
         return TextAnalysisResponseDTO(
-            image_uri = self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(prediction),
-            feedback_id = model_log.uuid
+            image_uri=self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(prediction),
+            feedback_id=model_log.uuid
         )
+
+    def handle_feedback_review(self, feedback_id: str):
+        """This function handles getting review as follows:
+        
+        1. Verify whether this feedback is already reviewed. If reviewed, throw exception
+        2. Return the feedback.
+        
+        """
