@@ -1,14 +1,15 @@
 from sqlmodel import Session
 from common.constant import GCO_MODEL_TYPE_SWITCH_CONFIG_KEY, LGBM_MODEL_VERSION, SVC_MODEL_VERSION
 from core.model_integrator import EmoAnalyzerModel
-from model.entity.ModelVersion import ModelVersion
-from model.entity.ModelLog import ModelLog
+from model.entity import ModelVersion
+from model.entity import ModelLog
 
 import uuid
 
-from repository.gco.ConfigRepository import ConfigRepository
-from repository.ml.EmotionPicRepository import EmotionPicRepository
-from repository.mlops.ModelLogRepository import ModelLogRepository
+from model.object.response.TextAnalysisResponseDTO import TextAnalysisResponseDTO
+from repository.gco import ConfigRepository
+from repository.ml import EmotionPicRepository
+from repository.mlops import ModelLogRepository
 
 class TextAnalyzerControllerHandler:
 
@@ -18,7 +19,7 @@ class TextAnalyzerControllerHandler:
         self.emotion_pic_repository = EmotionPicRepository(session)    
 
 
-    def handle_text_analysis(self, text: str) -> str:
+    def handle_text_analysis(self, text: str) -> TextAnalysisResponseDTO:
         """This handler function processes as bridge input text to perform sentiment analysis, 
         and take control of the logic to return the CDN URL of an image related to the sentiment of the text.
 
@@ -46,5 +47,7 @@ class TextAnalyzerControllerHandler:
 
         self.model_log_repository.create_model_log(model_log)
 
-        return self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(prediction)
-            
+        return TextAnalysisResponseDTO(
+            image_uri = self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(prediction),
+            feedback_id = model_log.uuid
+        )
