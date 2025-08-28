@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from routes.routes import route
 
 app = FastAPI()
+
+from middleware import Authenticate
+app.add_middleware(Authenticate)
+
 app.include_router(route)
 
 print("Core Service is running")
