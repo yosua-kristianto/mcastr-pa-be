@@ -1,9 +1,9 @@
 from sqlalchemy import func
 from sqlmodel import select
-from model.entity.EmotionPicRepo import EmotionPicRepo
+from model.entity import EmotionPicRepo
 from sqlmodel import Session
 
-from repository.BaseRepository import BaseRepository
+from repository import BaseRepository
 
 class EmotionPicRepository(BaseRepository):
 

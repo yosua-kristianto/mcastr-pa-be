@@ -1,7 +1,7 @@
-from model.entity.ModelLog import ModelLog
+from model.entity import ModelLog
 from sqlmodel import Session
 
-from repository.BaseRepository import BaseRepository
+from repository import BaseRepository
 
 class ModelLogRepository(BaseRepository):
     def create_model_log(self, obj: ModelLog):

@@ -1,8 +1,8 @@
 from sqlmodel import select
-from model.entity.Config import Config
+from model.entity import Config
 from sqlmodel import Session
 
-from repository.BaseRepository import BaseRepository
+from repository import BaseRepository
 
 class ConfigRepository(BaseRepository):
     def get_config_by_key(self, key: str) -> str :
