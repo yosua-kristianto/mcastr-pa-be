@@ -1,6 +1,6 @@
 from .TextAnalysisRequestDTO import TextAnalysisRequestDTO
-from .TextAnalysisFeedbackRequestDTO import TextAnalysisRequestDTO
+from .TextAnalysisFeedbackReviewRequestDTO import TextAnalysisFeedbackReviewRequestDTO
 __all__ = [
     "TextAnalysisRequestDTO",
-    "TextAnalysisFeedbackRequestDTO"
+    "TextAnalysisFeedbackReviewRequestDTO"
 ]

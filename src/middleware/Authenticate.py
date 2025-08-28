@@ -1,9 +1,14 @@
-from http.client import HTTPException
+from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
+from starlette.responses import JSONResponse
 
+from common.exception.auth import UnauthorizedException, InvalidXTokenException
 from common.facade.encryption import hash, verify_hash
 import json
+
+from model.object import BaseResponseException
+
 
 class Authenticate(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -18,7 +23,8 @@ class Authenticate(BaseHTTPMiddleware):
             return await call_next(request)
         
         if(request.headers.get("X-AUTH-TOKEN") is None):
-            raise HTTPException(status_code=401, detail="Unauthorized")
+            return JSONResponse(content=UnauthorizedException().error_response())
+
 
         token = request.headers.get("X-AUTH-TOKEN") 
 
@@ -34,6 +40,7 @@ class Authenticate(BaseHTTPMiddleware):
         print(json_request)
 
         if(not verify_hash(token, hash(json_request))):
-           raise HTTPException(status_code=403, detail="Invalid token")
-        
+            return JSONResponse(content = InvalidXTokenException().error_response())
+
+
         return await call_next(request)

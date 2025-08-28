@@ -1,3 +1,4 @@
 from .TextAnalysisResponseDTO import TextAnalysisResponseDTO
+from .TextAnalaysisFeedbackReviewResponseDTO import TextAnalysisFeedbackReviewResponseDTO
 
-__all__ = ["TextAnalysisResponseDTO"]
+__all__ = ["TextAnalysisResponseDTO", "TextAnalysisFeedbackReviewResponseDTO"]
