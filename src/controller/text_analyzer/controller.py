@@ -32,7 +32,7 @@ class TextAnalyzerController:
         """
         
         response: TextAnalysisRequestDTO = await TextAnalyzerControllerHandler(session).handle_text_analysis(request.text)
-        
+
         return BaseResponse.ok(
             message = "Text analysis completed", 
             data = response
@@ -73,6 +73,7 @@ class TextAnalyzerController:
 
         return BaseResponse.ok(message = "Feedback Provided", data = tidy_response)
 
+    @router.post("/feedback/submit")
     async def feedback_review_submission(request: TextAnalysisFeedbackReviewSubmissionRequestDTO, session: Session = Depends(get_session)):
         """This endpoints submits feedback review.
 
@@ -88,3 +89,7 @@ class TextAnalyzerController:
         }
 
         """
+        await TextAnalyzerControllerHandler(session).handle_feedback_submission(request.feedback_id, request.submission)
+        return BaseResponse.ok(message = "Feedback successfully submitted", data = {
+            "feedback_id": request.feedback_id
+        })
