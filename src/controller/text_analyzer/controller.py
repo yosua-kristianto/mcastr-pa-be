@@ -4,9 +4,8 @@ from controller.text_analyzer.controller_handler import TextAnalyzerControllerHa
 
 from core.database import get_session
 from model.object import BaseResponse
-from model.object.request import TextAnalysisRequestDTO, TextAnalysisFeedbackReviewRequestDTO
-from model.object.response import TextAnalysisResponseDTO
-
+from model.object.request import TextAnalysisRequestDTO, TextAnalysisFeedbackReviewRequestDTO, TextAnalysisFeedbackReviewSubmissionRequestDTO
+from model.object.response import TextAnalysisResponseDTO, TextAnalysisFeedbackReviewResponseDTO
 
 
 class TextAnalyzerController:
@@ -39,7 +38,7 @@ class TextAnalyzerController:
             data = response
         )
 
-
+    @router.post("/feedback/review")
     async def feedback_review(request: TextAnalysisFeedbackReviewRequestDTO, session: Session = Depends(get_session)):
         """This endpoints triggers feedback review options. Providing a multiple choices
         that is based-on randomized value from pic repository.
@@ -57,6 +56,35 @@ class TextAnalyzerController:
             "3": "some_cdn/path/to/image.jpg",
             "4": "some_cdn/path/to/image.jpg",
             "5": "some_cdn/path/to/image.jpg",
+        }
+
+        """
+
+        response: TextAnalysisFeedbackReviewResponseDTO = await TextAnalyzerControllerHandler(session).handle_feedback_review(request.feedback_id)
+
+        tidy_response = {
+            "0": response.ressemblance_0,
+            "1": response.ressemblance_1,
+            "2": response.ressemblance_2,
+            "3": response.ressemblance_3,
+            "4": response.ressemblance_4,
+            "5": response.ressemblance_5
+        }
+
+        return BaseResponse.ok(message = "Feedback Provided", data = tidy_response)
+
+    async def feedback_review_submission(request: TextAnalysisFeedbackReviewSubmissionRequestDTO, session: Session = Depends(get_session)):
+        """This endpoints submits feedback review.
+
+        -- Request:
+        {
+            "feedback_id": "some-feedback-uuid",
+            "submission": 1
+        }
+
+        -- Response:
+        {
+            "feedback_id": "some-feedback-uuid"
         }
 
         """
