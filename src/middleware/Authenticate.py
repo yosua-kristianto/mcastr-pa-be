@@ -22,7 +22,7 @@ class Authenticate(BaseHTTPMiddleware):
         if request.url.path in unguarded_check:
             return await call_next(request)
         
-        if(request.headers.get("X-AUTH-TOKEN") is None):
+        if request.headers.get("X-AUTH-TOKEN") is None:
             return JSONResponse(content=UnauthorizedException().error_response())
 
 
@@ -39,7 +39,7 @@ class Authenticate(BaseHTTPMiddleware):
         print(body)
         print(json_request)
 
-        if(not verify_hash(token, hash(json_request))):
+        if not verify_hash(token, hash(json_request)):
             return JSONResponse(content = InvalidXTokenException().error_response())
 
 

@@ -6,6 +6,7 @@ from model.entity import ModelLog
 
 import uuid
 
+from model.object.response import TextAnalysisFeedbackReviewResponseDTO
 from model.object.response.TextAnalysisResponseDTO import TextAnalysisResponseDTO
 from repository.gco import ConfigRepository
 from repository.ml import EmotionPicRepository
@@ -51,10 +52,40 @@ class TextAnalyzerControllerHandler:
             feedback_id=model_log.uuid
         )
 
-    def handle_feedback_review(self, feedback_id: str):
+    async def handle_feedback_review(self, feedback_id: str):
         """This function handles getting review as follows:
         
         1. Verify whether this feedback is already reviewed. If reviewed, throw exception
         2. Return the feedback.
         
         """
+        model_log: ModelLog = self.model_log_repository.get_model_log_by_id(feedback_id)
+
+        if model_log.feedback_actual_output is not None:
+            raise Exception(f"The feedback has been submitted already")
+
+        response_dto = TextAnalysisFeedbackReviewResponseDTO(
+            self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(0),
+            self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(1),
+            self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(2),
+            self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(3),
+            self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(4),
+            self.emotion_pic_repository.get_emotion_pic_by_emotion_flag(5)
+        )
+
+        return response_dto
+
+
+    async def handle_feedback_submission(self, feedback_id: str, submission: int):
+        """This function handles feedback submission.
+
+        1. Get the Model Log ID that is not reviewed yet
+        2. Update the respective model log's review.
+
+        """
+        model_log: ModelLog = self.model_log_repository.get_model_log_by_id(feedback_id)
+
+        if model_log.feedback_actual_output is not None:
+            raise Exception(f"The feedback has been submitted already")
+
+        self.model_log_repository.update_model_log_actual_output(feedback_id, submission)

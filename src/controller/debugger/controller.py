@@ -19,7 +19,7 @@ class DebuggerController:
         
         -- """
 
-        if(not settings.app_debug):
+        if not settings.app_debug:
             raise Exception("This endpoint is only available in debug mode.")
 
         def minify_json(json_str: str) -> str:
