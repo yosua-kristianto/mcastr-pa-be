@@ -63,12 +63,30 @@ class TextAnalyzerController:
         response: TextAnalysisFeedbackReviewResponseDTO = await TextAnalyzerControllerHandler(session).handle_feedback_review(request.feedback_id)
 
         tidy_response = {
-            "0": response.ressemblance_0,
-            "1": response.ressemblance_1,
-            "2": response.ressemblance_2,
-            "3": response.ressemblance_3,
-            "4": response.ressemblance_4,
-            "5": response.ressemblance_5
+            "data_0": {
+                "image_uri": response.ressemblance_0,
+                "choice_id": 0
+            },
+            "data_1": {
+                "image_uri": response.ressemblance_1,
+                "choice_id": 1
+            },
+            "data_2": {
+                "image_uri": response.ressemblance_2,
+                "choice_id": 2
+            },
+            "data_3": {
+                "image_uri": response.ressemblance_3,
+                "choice_id": 3
+            },
+            "data_4": {
+                "image_uri": response.ressemblance_4,
+                "choice_id": 4
+            },
+            "data_5": {
+                "image_uri": response.ressemblance_5,
+                "choice_id": 5
+            }
         }
 
         return BaseResponse.ok(message = "Feedback Provided", data = tidy_response)
@@ -89,7 +107,7 @@ class TextAnalyzerController:
         }
 
         """
-        await TextAnalyzerControllerHandler(session).handle_feedback_submission(request.feedback_id, request.submission)
+        await TextAnalyzerControllerHandler(session).handle_feedback_submission(request.feedback_id, request.review_id)
         return BaseResponse.ok(message = "Feedback successfully submitted", data = {
             "feedback_id": request.feedback_id
         })
