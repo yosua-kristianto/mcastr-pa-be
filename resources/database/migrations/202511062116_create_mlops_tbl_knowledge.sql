@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS gco_tbl_config (
+    `id` VARCHAR(36) PRIMARY KEY,
+    `prompt` TEXT,
+    `label` SMALLINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+);
