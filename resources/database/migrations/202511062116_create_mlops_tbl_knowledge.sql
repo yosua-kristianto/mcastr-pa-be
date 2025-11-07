@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS gco_tbl_config (
+CREATE TABLE IF NOT EXISTS mlops_tbl_knowledge (
     `id` VARCHAR(36) PRIMARY KEY,
     `prompt` TEXT,
     `label` SMALLINT NOT NULL,
