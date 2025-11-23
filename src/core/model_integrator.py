@@ -29,8 +29,7 @@ class EmoAnalyzerModel:
         return model
     
     def emo_analysis(self, text: str) -> int:
-        vector = vectorizer.transform([text])
-        tensor = self.model.predict(vector)
+        tensor = self.model.predict([text])
         prediction = tensor[0]
 
         print(f"Prediction: {prediction}")
